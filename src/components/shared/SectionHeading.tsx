@@ -7,6 +7,7 @@ interface SectionHeadingProps {
   align?: "left" | "center";
   dark?: boolean;
   className?: string;
+  gradient?: boolean;
 }
 
 export default function SectionHeading({
@@ -16,11 +17,12 @@ export default function SectionHeading({
   align = "center",
   dark = false,
   className,
+  gradient = false,
 }: SectionHeadingProps) {
   return (
     <div
       className={cn(
-        "max-w-3xl mb-12 md:mb-16",
+        "max-w-3xl mb-16 md:mb-20",
         align === "center" && "mx-auto text-center",
         align === "left" && "text-left",
         className
@@ -29,19 +31,24 @@ export default function SectionHeading({
       {badge && (
         <span
           className={cn(
-            "inline-block mb-3 px-4 py-1.5 text-xs font-semibold uppercase tracking-widest rounded-full",
+            "inline-flex items-center gap-2 mb-6 px-4 py-1.5 text-sm font-semibold tracking-wide rounded-full border",
             dark
-              ? "text-brand-200 bg-brand-800"
-              : "text-brand-600 bg-brand-100"
+              ? "text-brand-300 bg-brand-500/10 border-brand-500/20"
+              : "text-brand-600 bg-brand-500/5 border-brand-500/10"
           )}
         >
+          <span className={cn(
+            "w-1.5 h-1.5 rounded-full",
+            dark ? "bg-brand-400" : "bg-brand-500"
+          )} />
           {badge}
         </span>
       )}
       <h2
         className={cn(
-          "text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight",
-          dark ? "text-white" : "text-gray-900"
+          "text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight leading-[1.1]",
+          dark ? "text-white" : "text-dark-900",
+          gradient && "gradient-text"
         )}
       >
         {title}
@@ -49,8 +56,8 @@ export default function SectionHeading({
       {subtitle && (
         <p
           className={cn(
-            "mt-4 text-lg md:text-xl leading-relaxed",
-            dark ? "text-brand-200" : "text-gray-600",
+            "mt-6 text-lg md:text-xl leading-relaxed",
+            dark ? "text-white/50" : "text-dark-600/70",
             align === "center" && "mx-auto max-w-2xl"
           )}
         >

@@ -1,30 +1,51 @@
 @import "tailwindcss";
 
 @theme inline {
-  /* Core brand palette — iTarang teal-blue spectrum */
-  --color-brand-50: #e8f6fc;
-  --color-brand-100: #c9eaf7;
-  --color-brand-200: #90d4ef;
-  --color-brand-300: #50b8e2;
-  --color-brand-400: #1ea3d4;
-  --color-brand-500: #138fc6;
-  --color-brand-600: #2e68b2;
-  --color-brand-700: #165e73;
-  --color-brand-800: #0d4a5e;
-  --color-brand-900: #02314e;
-  --color-brand-950: #011a2a;
+  /* ========================================
+     2026 SaaS Premium Color System
+     Dark/Light mode with glassmorphism support
+     ======================================== */
+  
+  /* Core brand palette — refined teal-blue spectrum */
+  --color-brand-50: #ecfeff;
+  --color-brand-100: #cffafe;
+  --color-brand-200: #a5f3fc;
+  --color-brand-300: #67e8f9;
+  --color-brand-400: #22d3ee;
+  --color-brand-500: #06b6d4;
+  --color-brand-600: #0891b2;
+  --color-brand-700: #0e7490;
+  --color-brand-800: #155e75;
+  --color-brand-900: #164e63;
+  --color-brand-950: #083344;
 
-  /* Accent palette — blue-complementary spectrum */
-  --color-accent-sky: #38bdf8;
-  --color-accent-green: #10b981;
-  --color-accent-yellow: #fbbf24;
+  /* Accent palette — electric highlights */
+  --color-accent-cyan: #22d3ee;
+  --color-accent-blue: #3b82f6;
+  --color-accent-violet: #8b5cf6;
   --color-accent-amber: #f59e0b;
-  --color-accent-cyan: #06b6d4;
+  --color-accent-emerald: #10b981;
+  --color-accent-rose: #f43f5e;
 
-  /* Surface palette — cool-toned grays for blue harmony */
-  --color-surface-warm: #f8fafc;
-  --color-surface-cream: #f1f5f9;
-  --color-surface-mist: #cecccd;
+  /* Glow colors for 3D effects */
+  --color-glow-cyan: rgba(34, 211, 238, 0.4);
+  --color-glow-blue: rgba(59, 130, 246, 0.4);
+  --color-glow-violet: rgba(139, 92, 246, 0.3);
+  --color-glow-amber: rgba(245, 158, 11, 0.3);
+
+  /* Surface palette — sophisticated neutrals */
+  --color-surface-50: #fafafa;
+  --color-surface-100: #f4f4f5;
+  --color-surface-200: #e4e4e7;
+  --color-surface-warm: #fafaf9;
+  --color-surface-cream: #f5f5f4;
+
+  /* Dark mode surfaces */
+  --color-dark-950: #09090b;
+  --color-dark-900: #18181b;
+  --color-dark-800: #27272a;
+  --color-dark-700: #3f3f46;
+  --color-dark-600: #52525b;
 
   /* Typography */
   --font-display: var(--font-display);
@@ -32,36 +53,71 @@
   --font-mono: var(--font-mono);
 
   /* Animations */
-  --animate-fade-up: fade-up 0.6s ease-out forwards;
+  --animate-fade-up: fade-up 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  --animate-fade-slide: fade-slide 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
   --animate-float: float 6s ease-in-out infinite;
-  --animate-pulse-slow: pulse 3s ease-in-out infinite;
-  --animate-shine: shine var(--duration, 14s) infinite linear;
+  --animate-float-slow: float-slow 8s ease-in-out infinite;
+  --animate-pulse-glow: pulse-glow 3s ease-in-out infinite;
+  --animate-shine: shine 8s linear infinite;
   --animate-grain: grain 8s steps(10) infinite;
-  --animate-glow-pulse: glow-pulse 4s ease-in-out infinite;
+  --animate-parallax: parallax 20s linear infinite;
+  --animate-hover-lift: hover-lift 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
-/* shadcn CSS variables mapped to iTarang brand */
+/* shadcn CSS variables mapped to 2026 Premium theme */
 :root {
   --background: 0 0% 100%;
-  --foreground: 30 10% 10%;
-  --card: 36 33% 98%;
-  --card-foreground: 30 10% 10%;
+  --foreground: 240 10% 3.9%;
+  --card: 0 0% 100%;
+  --card-foreground: 240 10% 3.9%;
   --popover: 0 0% 100%;
-  --popover-foreground: 30 10% 10%;
-  --primary: 199 83% 42%;
+  --popover-foreground: 240 10% 3.9%;
+  --primary: 187 85% 43%;
   --primary-foreground: 0 0% 100%;
-  --secondary: 199 30% 96%;
-  --secondary-foreground: 199 83% 35%;
-  --muted: 199 20% 95%;
-  --muted-foreground: 199 16% 47%;
-  --accent: 199 30% 96%;
-  --accent-foreground: 199 83% 35%;
+  --secondary: 240 4.8% 95.9%;
+  --secondary-foreground: 240 5.9% 10%;
+  --muted: 240 4.8% 95.9%;
+  --muted-foreground: 240 3.8% 46.1%;
+  --accent: 187 85% 95%;
+  --accent-foreground: 187 85% 25%;
   --destructive: 0 84% 60%;
   --destructive-foreground: 0 0% 98%;
-  --border: 214 20% 88%;
-  --input: 214 20% 88%;
-  --ring: 199 83% 42%;
+  --border: 240 5.9% 90%;
+  --input: 240 5.9% 90%;
+  --ring: 187 85% 43%;
   --radius: 0.75rem;
+  
+  /* Glassmorphism variables */
+  --glass-bg: rgba(255, 255, 255, 0.7);
+  --glass-border: rgba(255, 255, 255, 0.3);
+  --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+}
+
+.dark {
+  --background: 240 10% 3.9%;
+  --foreground: 0 0% 98%;
+  --card: 240 10% 6%;
+  --card-foreground: 0 0% 98%;
+  --popover: 240 10% 6%;
+  --popover-foreground: 0 0% 98%;
+  --primary: 187 85% 53%;
+  --primary-foreground: 240 10% 3.9%;
+  --secondary: 240 3.7% 15.9%;
+  --secondary-foreground: 0 0% 98%;
+  --muted: 240 3.7% 15.9%;
+  --muted-foreground: 240 5% 64.9%;
+  --accent: 187 85% 15%;
+  --accent-foreground: 187 85% 80%;
+  --destructive: 0 62.8% 30.6%;
+  --destructive-foreground: 0 0% 98%;
+  --border: 240 3.7% 15.9%;
+  --input: 240 3.7% 15.9%;
+  --ring: 187 85% 53%;
+  
+  /* Dark glassmorphism */
+  --glass-bg: rgba(24, 24, 27, 0.8);
+  --glass-border: rgba(255, 255, 255, 0.08);
+  --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
 }
 
 /* ========================================
@@ -69,19 +125,45 @@
    ======================================== */
 
 @keyframes fade-up {
-  from { opacity: 0; transform: translateY(20px); }
+  from { opacity: 0; transform: translateY(30px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
+@keyframes fade-slide {
+  from { opacity: 0; transform: translateY(40px) scale(0.98); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
 @keyframes float {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-10px); }
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-12px) rotate(1deg); }
+}
+
+@keyframes float-slow {
+  0%, 100% { transform: translateY(0) translateX(0); }
+  25% { transform: translateY(-8px) translateX(4px); }
+  50% { transform: translateY(-16px) translateX(0); }
+  75% { transform: translateY(-8px) translateX(-4px); }
+}
+
+@keyframes pulse-glow {
+  0%, 100% { opacity: 0.4; transform: scale(1); }
+  50% { opacity: 0.8; transform: scale(1.05); }
 }
 
 @keyframes shine {
-  0% { background-position: 0% 0%; }
-  50% { background-position: 100% 100%; }
-  to { background-position: 0% 0%; }
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+
+@keyframes parallax {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(-20%); }
+}
+
+@keyframes hover-lift {
+  from { transform: translateY(0) scale(1); }
+  to { transform: translateY(-8px) scale(1.02); }
 }
 
 @keyframes accordion-down {
@@ -107,9 +189,15 @@
   90% { transform: translate(-10%, 10%); }
 }
 
-@keyframes glow-pulse {
-  0%, 100% { opacity: 0.4; }
-  50% { opacity: 0.8; }
+@keyframes border-glow {
+  0%, 100% { border-color: rgba(34, 211, 238, 0.3); }
+  50% { border-color: rgba(34, 211, 238, 0.6); }
+}
+
+@keyframes gradient-shift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
 }
 
 /* ========================================
@@ -124,8 +212,8 @@ body {
   font-family: var(--font-sans), system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  color: #1e293b;
-  background-color: #f8fafc;
+  color: #18181b;
+  background-color: #fafafa;
 }
 
 /* Display font for headings */
@@ -134,95 +222,306 @@ h1, h2, h3 {
 }
 
 /* ========================================
-   Utility layers
+   Glassmorphism Components
    ======================================== */
 
-/* Grain texture overlay — add class "grain-overlay" to any section's ::after */
-.grain-overlay {
-  position: relative;
-}
-.grain-overlay::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  opacity: 0.03;
-  pointer-events: none;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
-  background-size: 128px 128px;
-  animation: grain 8s steps(10) infinite;
-}
-
-/* Section divider — organic wave */
-.section-divider {
-  position: relative;
-}
-.section-divider::before {
-  content: "";
-  position: absolute;
-  top: -1px;
-  left: 0;
-  right: 0;
-  height: 60px;
-  background: inherit;
-  clip-path: ellipse(60% 100% at 50% 100%);
-}
-
-/* Glass card effect */
 .glass-card {
-  background: rgba(255, 255, 255, 0.7);
+  background: var(--glass-bg);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.3);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow);
 }
 
-/* Blue gradient text */
+.glass-card-strong {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(40px);
+  -webkit-backdrop-filter: blur(40px);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  box-shadow: 
+    0 4px 24px rgba(0, 0, 0, 0.06),
+    0 1px 2px rgba(0, 0, 0, 0.04),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8);
+}
+
+.glass-dark {
+  background: rgba(24, 24, 27, 0.85);
+  backdrop-filter: blur(40px);
+  -webkit-backdrop-filter: blur(40px);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  box-shadow: 
+    0 8px 32px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+/* ========================================
+   3D Card Effects with Glow
+   ======================================== */
+
+.card-3d {
+  position: relative;
+  transform-style: preserve-3d;
+  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.card-3d:hover {
+  transform: perspective(1000px) rotateX(2deg) rotateY(-2deg) translateY(-8px);
+}
+
+.card-glow {
+  position: relative;
+}
+
+.card-glow::before {
+  content: "";
+  position: absolute;
+  inset: -2px;
+  border-radius: inherit;
+  padding: 2px;
+  background: linear-gradient(135deg, var(--color-glow-cyan), var(--color-glow-violet), var(--color-glow-cyan));
+  background-size: 200% 200%;
+  animation: gradient-shift 4s ease infinite;
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.card-glow:hover::before {
+  opacity: 1;
+}
+
+.ambient-glow {
+  position: relative;
+}
+
+.ambient-glow::after {
+  content: "";
+  position: absolute;
+  inset: -30%;
+  background: radial-gradient(circle, var(--color-glow-cyan) 0%, transparent 70%);
+  border-radius: 50%;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+  z-index: -1;
+}
+
+.ambient-glow:hover::after {
+  opacity: 0.3;
+}
+
+/* ========================================
+   Gradient Text & Effects
+   ======================================== */
+
 .gradient-text {
-  background: linear-gradient(135deg, #02314e 0%, #138fc6 40%, #38bdf8 100%);
+  background: linear-gradient(135deg, #06b6d4 0%, #3b82f6 50%, #8b5cf6 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
 
-/* Ambient glow behind elements */
-.ambient-glow {
-  position: relative;
+.gradient-text-animated {
+  background: linear-gradient(
+    90deg,
+    #06b6d4 0%,
+    #3b82f6 25%,
+    #8b5cf6 50%,
+    #3b82f6 75%,
+    #06b6d4 100%
+  );
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: shine 8s linear infinite;
 }
-.ambient-glow::before {
-  content: "";
+
+/* ========================================
+   Bento Grid System
+   ======================================== */
+
+.bento-grid {
+  display: grid;
+  gap: 1.5rem;
+  grid-template-columns: repeat(4, 1fr);
+  grid-auto-rows: minmax(180px, auto);
+}
+
+@media (max-width: 1024px) {
+  .bento-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .bento-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.bento-item {
+  border-radius: 1.5rem;
+  padding: 2rem;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.bento-item-lg {
+  grid-column: span 2;
+  grid-row: span 2;
+}
+
+.bento-item-wide {
+  grid-column: span 2;
+}
+
+.bento-item-tall {
+  grid-row: span 2;
+}
+
+/* ========================================
+   Clean Border System
+   ======================================== */
+
+.border-clean {
+  border: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.border-clean-hover {
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.border-clean-hover:hover {
+  border-color: rgba(6, 182, 212, 0.4);
+  box-shadow: 0 0 0 4px rgba(6, 182, 212, 0.08);
+}
+
+.border-glow {
+  position: relative;
+  border: 1px solid rgba(34, 211, 238, 0.2);
+  animation: border-glow 3s ease-in-out infinite;
+}
+
+/* ========================================
+   Sticky Parallax Backgrounds
+   ======================================== */
+
+.parallax-container {
+  position: relative;
+  overflow: hidden;
+}
+
+.parallax-bg {
   position: absolute;
   inset: -20%;
-  background: radial-gradient(circle, rgba(19, 143, 198, 0.15) 0%, transparent 70%);
-  border-radius: 50%;
-  pointer-events: none;
-  animation: glow-pulse 4s ease-in-out infinite;
+  background-attachment: fixed;
+  background-position: center;
+  background-size: cover;
+  will-change: transform;
 }
 
-/* Stat card styling */
+.sticky-section {
+  position: sticky;
+  top: 0;
+}
+
+/* ========================================
+   Hover Lift Effects
+   ======================================== */
+
+.hover-lift {
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s ease;
+}
+
+.hover-lift:hover {
+  transform: translateY(-8px);
+  box-shadow: 
+    0 20px 40px rgba(0, 0, 0, 0.08),
+    0 8px 16px rgba(0, 0, 0, 0.04);
+}
+
+.hover-lift-sm {
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease;
+}
+
+.hover-lift-sm:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.06);
+}
+
+/* ========================================
+   Stat card styling
+   ======================================== */
+
 .stat-card {
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(232, 246, 252, 0.7) 100%);
-  backdrop-filter: blur(12px);
-  border: 1px solid rgba(19, 143, 198, 0.1);
-  border-radius: 1rem;
+  background: var(--glass-bg);
+  backdrop-filter: blur(20px);
+  border: 1px solid var(--glass-border);
+  border-radius: 1.25rem;
   padding: 1.5rem;
+  position: relative;
+  overflow: hidden;
 }
 
-/* Custom scrollbar */
+.stat-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(34, 211, 238, 0.5), transparent);
+}
+
+/* ========================================
+   Premium Scrollbar
+   ======================================== */
+
 ::-webkit-scrollbar {
-  width: 8px;
+  width: 10px;
 }
+
 ::-webkit-scrollbar-track {
-  background: #f8fafc;
+  background: #fafafa;
 }
+
 ::-webkit-scrollbar-thumb {
-  background: #90d4ef;
-  border-radius: 4px;
+  background: linear-gradient(180deg, #a5f3fc, #06b6d4);
+  border-radius: 5px;
+  border: 2px solid #fafafa;
 }
+
 ::-webkit-scrollbar-thumb:hover {
-  background: #50b8e2;
+  background: linear-gradient(180deg, #67e8f9, #0891b2);
 }
 
 /* Selection color */
 ::selection {
-  background: rgba(19, 143, 198, 0.2);
-  color: #02314e;
+  background: rgba(6, 182, 212, 0.2);
+  color: #083344;
+}
+
+/* ========================================
+   Grain texture overlay
+   ======================================== */
+
+.grain-overlay {
+  position: relative;
+}
+
+.grain-overlay::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: 0.015;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+  background-size: 128px 128px;
+  animation: grain 8s steps(10) infinite;
 }

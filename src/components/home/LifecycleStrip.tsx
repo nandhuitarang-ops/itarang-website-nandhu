@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import {
   Banknote,
   Truck,
@@ -9,167 +9,242 @@ import {
   Wrench,
   RotateCcw,
   Recycle,
+  ArrowRight,
 } from "lucide-react";
-import FadeInOnScroll from "@/components/shared/FadeInOnScroll";
+import { staggerContainer, staggerItem, hoverLift } from "@/lib/animations";
+import { useInView } from "react-intersection-observer";
 
 const stages = [
   {
     icon: Banknote,
     label: "Finance",
-    description:
-      "Drivers get a lithium battery on EMI. NBFCs get IoT-backed risk data before they approve.",
-    stat: "₹49K avg loan, 18-month tenure",
-    gradient: "from-blue-500/20 to-indigo-500/20",
+    description: "Drivers get a lithium battery on EMI. NBFCs get IoT-backed risk data before they approve.",
+    stat: "18-month tenure",
+    statLabel: "Avg. Loan",
+    color: "from-blue-500 to-indigo-600",
+    glowColor: "rgba(59, 130, 246, 0.3)",
     iconBg: "bg-blue-500/10",
-    iconColor: "text-blue-600",
+    size: "lg", // Bento size: lg, wide, tall, or default
   },
   {
     icon: Truck,
     label: "Deploy",
-    description:
-      "Dealer installs the battery + IoT device. Driver is live in 24 hours.",
-    stat: "24-hour activation",
-    gradient: "from-blue-500/20 to-cyan-500/20",
-    iconBg: "bg-blue-500/10",
-    iconColor: "text-blue-500",
+    description: "Dealer installs the battery + IoT device. Driver is live in 24 hours.",
+    stat: "24h",
+    statLabel: "Activation",
+    color: "from-cyan-500 to-blue-500",
+    glowColor: "rgba(34, 211, 238, 0.3)",
+    iconBg: "bg-cyan-500/10",
+    size: "default",
   },
   {
     icon: Activity,
     label: "Monitor",
-    description:
-      "Real-time SOH, SOC, location, temperature, charge cycles. Every battery has a heartbeat.",
-    stat: "150+ batteries tracked live",
-    gradient: "from-cyan-500/20 to-teal-500/20",
-    iconBg: "bg-cyan-500/10",
-    iconColor: "text-cyan-600",
+    description: "Real-time SOH, SOC, location, temperature, charge cycles. Every battery has a heartbeat.",
+    stat: "1000+",
+    statLabel: "Live Tracked",
+    color: "from-teal-500 to-emerald-500",
+    glowColor: "rgba(20, 184, 166, 0.3)",
+    iconBg: "bg-teal-500/10",
+    size: "wide",
   },
   {
     icon: Wrench,
     label: "Maintain",
-    description:
-      "Alerts for anomalies before they become failures. Extend battery life by 20-30%.",
-    stat: "20-30% longer lifespan",
-    gradient: "from-teal-500/20 to-emerald-500/20",
-    iconBg: "bg-teal-500/10",
-    iconColor: "text-teal-600",
+    description: "Alerts for anomalies before they become failures. Extend battery life by 20-30%.",
+    stat: "+30%",
+    statLabel: "Longer Life",
+    color: "from-emerald-500 to-green-500",
+    glowColor: "rgba(16, 185, 129, 0.3)",
+    iconBg: "bg-emerald-500/10",
+    size: "default",
   },
   {
     icon: RotateCcw,
     label: "Buyback",
-    description:
-      "When the battery reaches end-of-first-life, we buy it back. Fair price based on actual health data.",
-    stat: "98% recovery rate",
-    gradient: "from-amber-500/20 to-orange-500/20",
+    description: "When the battery reaches end-of-first-life, we buy it back. Fair price based on actual health data.",
+    stat: "98%",
+    statLabel: "Recovery Rate",
+    color: "from-amber-500 to-orange-500",
+    glowColor: "rgba(245, 158, 11, 0.3)",
     iconBg: "bg-amber-500/10",
-    iconColor: "text-amber-600",
+    size: "default",
   },
   {
     icon: Recycle,
     label: "Recycle",
-    description:
-      "Partnered recyclers extract cobalt, lithium, and nickel. Full EPR compliance for OEMs.",
-    stat: "Full EPR compliance",
-    gradient: "from-emerald-500/20 to-green-500/20",
-    iconBg: "bg-emerald-500/10",
-    iconColor: "text-emerald-600",
+    description: "Partnered recyclers extract cobalt, lithium, and nickel. Full EPR compliance for OEMs.",
+    stat: "100%",
+    statLabel: "EPR Compliant",
+    color: "from-green-500 to-teal-500",
+    glowColor: "rgba(34, 197, 94, 0.3)",
+    iconBg: "bg-green-500/10",
+    size: "default",
   },
 ];
 
 export default function LifecycleStrip() {
-  const [activeStage, setActiveStage] = useState<number | null>(null);
+  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
+  const { ref, inView } = useInView({ triggerOnce: true, threshold: 0.1 });
+
+  const getBentoClass = (size: string, index: number) => {
+    // Create asymmetrical bento layout
+    if (index === 0) return "md:col-span-2 md:row-span-2"; // Finance - large
+    if (index === 2) return "md:col-span-2"; // Monitor - wide
+    return ""; // Others - default
+  };
 
   return (
-    <section id="lifecycle" className="py-24 md:py-32 bg-surface-warm relative">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <FadeInOnScroll>
-          <div className="text-center max-w-3xl mx-auto mb-20">
-            <span className="inline-block text-sm font-semibold text-brand-500 tracking-widest uppercase mb-4">
+    <section id="lifecycle" className="py-32 lg:py-40 relative overflow-hidden bg-surface-50">
+      {/* Subtle background pattern */}
+      <div className="absolute inset-0">
+        <div
+          className="absolute inset-0 opacity-[0.02]"
+          style={{
+            backgroundImage: `
+              radial-gradient(circle at 1px 1px, rgba(0,0,0,0.15) 1px, transparent 0)
+            `,
+            backgroundSize: "32px 32px",
+          }}
+        />
+      </div>
+
+      <div className="mx-auto max-w-7xl px-6 lg:px-8 relative z-10">
+        {/* Section Header */}
+        <motion.div
+          ref={ref}
+          variants={staggerContainer}
+          initial="initial"
+          animate={inView ? "animate" : "initial"}
+          className="text-center max-w-3xl mx-auto mb-20"
+        >
+          <motion.div variants={staggerItem}>
+            <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-brand-500/5 border border-brand-500/10 text-brand-600 text-sm font-semibold tracking-wide mb-6">
+              <span className="w-1.5 h-1.5 rounded-full bg-brand-500" />
               The Full Lifecycle
             </span>
-            <h2 className="text-4xl sm:text-5xl lg:text-6xl text-gray-900 tracking-tight leading-[1.1]">
-              Six stages.{" "}
-              <span className="gradient-text">Zero blind spots.</span>
-            </h2>
-            <p className="mt-6 text-lg text-gray-500 leading-relaxed">
-              No competitor covers the entire journey. We do.
-            </p>
-          </div>
-        </FadeInOnScroll>
+          </motion.div>
 
-        {/* Lifecycle grid */}
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+          <motion.h2
+            variants={staggerItem}
+            className="text-4xl sm:text-5xl lg:text-6xl text-dark-900 tracking-tight leading-[1.1]"
+          >
+            Six stages.{" "}
+            <span className="gradient-text">Zero blind spots.</span>
+          </motion.h2>
+
+          <motion.p
+            variants={staggerItem}
+            className="mt-6 text-xl text-dark-600/70 leading-relaxed"
+          >
+            No competitor covers the entire journey. We do.
+          </motion.p>
+        </motion.div>
+
+        {/* Bento Grid */}
+        <motion.div
+          variants={staggerContainer}
+          initial="initial"
+          animate={inView ? "animate" : "initial"}
+          className="grid grid-cols-1 md:grid-cols-4 gap-5"
+        >
           {stages.map((stage, i) => {
             const Icon = stage.icon;
-            const isActive = activeStage === i;
+            const isHovered = hoveredIndex === i;
 
             return (
-              <FadeInOnScroll key={stage.label} delay={i * 0.08}>
-                <button
-                  onClick={() => setActiveStage(isActive ? null : i)}
-                  className={`w-full text-left rounded-2xl p-5 transition-all duration-300 border group relative overflow-hidden ${
-                    isActive
-                      ? "border-brand-300 bg-white shadow-xl shadow-brand-500/10 scale-[1.02]"
-                      : "border-gray-200/60 bg-white/60 hover:bg-white hover:border-brand-200 hover:shadow-lg"
-                  }`}
+              <motion.div
+                key={stage.label}
+                variants={staggerItem}
+                className={`relative group ${getBentoClass(stage.size, i)}`}
+                onMouseEnter={() => setHoveredIndex(i)}
+                onMouseLeave={() => setHoveredIndex(null)}
+              >
+                <motion.div
+                  initial="rest"
+                  whileHover="hover"
+                  variants={hoverLift}
+                  className="relative h-full rounded-3xl bg-white border border-dark-900/5 overflow-hidden transition-shadow duration-500 hover:shadow-2xl hover:shadow-dark-900/5"
                 >
-                  {/* Gradient background on hover/active */}
-                  <div className={`absolute inset-0 bg-gradient-to-br ${stage.gradient} opacity-0 ${isActive ? "opacity-100" : "group-hover:opacity-50"} transition-opacity rounded-2xl`} />
+                  {/* Glow effect on hover */}
+                  <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: isHovered ? 1 : 0 }}
+                    transition={{ duration: 0.3 }}
+                    className="absolute inset-0 rounded-3xl"
+                    style={{
+                      background: `radial-gradient(circle at 50% 0%, ${stage.glowColor}, transparent 70%)`,
+                    }}
+                  />
 
-                  <div className="relative z-10">
+                  {/* Border glow */}
+                  <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: isHovered ? 1 : 0 }}
+                    transition={{ duration: 0.3 }}
+                    className="absolute inset-0 rounded-3xl border-2"
+                    style={{
+                      borderColor: stage.glowColor.replace("0.3", "0.5"),
+                    }}
+                  />
+
+                  {/* Content */}
+                  <div className={`relative z-10 p-7 ${i === 0 ? "p-9" : ""} h-full flex flex-col`}>
                     {/* Step number + icon */}
-                    <div className="flex items-center gap-2 mb-4">
-                      <span className="text-[10px] font-bold text-brand-400 font-mono tracking-wider">
+                    <div className="flex items-center justify-between mb-6">
+                      <span className="text-xs font-bold text-dark-400 font-mono tracking-wider">
                         {String(i + 1).padStart(2, "0")}
                       </span>
-                    </div>
-
-                    {/* Icon */}
-                    <div className={`${stage.iconBg} w-10 h-10 rounded-xl flex items-center justify-center mb-3 transition-transform ${isActive ? "scale-110" : "group-hover:scale-105"}`}>
-                      <Icon className={`h-5 w-5 ${stage.iconColor}`} />
+                      <motion.div
+                        animate={{ rotate: isHovered ? 12 : 0 }}
+                        transition={{ duration: 0.3 }}
+                        className={`${stage.iconBg} w-12 h-12 rounded-2xl flex items-center justify-center`}
+                      >
+                        <Icon className={`h-6 w-6 bg-gradient-to-r ${stage.color} bg-clip-text text-transparent`} style={{ color: `hsl(var(--brand-500))` }} />
+                      </motion.div>
                     </div>
 
                     {/* Label */}
-                    <h3 className="text-base font-semibold text-gray-900 font-sans">
+                    <h3 className="text-xl font-bold text-dark-900 mb-3">
                       {stage.label}
                     </h3>
 
-                    {/* Expanded content */}
-                    <AnimatePresence>
-                      {isActive && (
-                        <motion.div
-                          initial={{ opacity: 0, height: 0 }}
-                          animate={{ opacity: 1, height: "auto" }}
-                          exit={{ opacity: 0, height: 0 }}
-                          transition={{ duration: 0.25 }}
-                          className="overflow-hidden"
-                        >
-                          <p className="mt-3 text-sm text-gray-600 leading-relaxed font-sans">
-                            {stage.description}
-                          </p>
-                          <p className="mt-3 text-xs font-bold text-brand-600 font-mono">
-                            {stage.stat}
-                          </p>
-                        </motion.div>
-                      )}
-                    </AnimatePresence>
+                    {/* Description */}
+                    <p className="text-dark-500 text-[15px] leading-relaxed flex-grow">
+                      {stage.description}
+                    </p>
+
+                    {/* Stat */}
+                    <div className="mt-6 pt-5 border-t border-dark-100">
+                      <div className="flex items-baseline gap-2">
+                        <span className={`text-2xl font-bold bg-gradient-to-r ${stage.color} bg-clip-text text-transparent`}>
+                          {stage.stat}
+                        </span>
+                        <span className="text-sm text-dark-400">{stage.statLabel}</span>
+                      </div>
+                    </div>
                   </div>
-                </button>
-              </FadeInOnScroll>
+                </motion.div>
+              </motion.div>
             );
           })}
-        </div>
+        </motion.div>
 
-        {/* Connecting dots */}
-        <div className="hidden lg:flex items-center justify-center mt-8 gap-0">
-          {stages.map((_, i) => (
-            <div key={i} className="flex items-center">
-              <div className={`h-2 w-2 rounded-full transition-colors ${activeStage === i ? "bg-brand-500 scale-125" : "bg-brand-300/50"}`} />
-              {i < stages.length - 1 && (
-                <div className="h-px w-16 bg-gradient-to-r from-brand-300/50 to-brand-300/20" />
-              )}
-            </div>
-          ))}
-        </div>
+        {/* CTA */}
+        <motion.div
+          variants={staggerItem}
+          initial="initial"
+          animate={inView ? "animate" : "initial"}
+          className="mt-16 text-center"
+        >
+          <a
+            href="/how-it-works"
+            className="group inline-flex items-center gap-2 text-brand-600 font-semibold hover:text-brand-700 transition-colors"
+          >
+            <span>Explore the full journey</span>
+            <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+          </a>
+        </motion.div>
       </div>
     </section>
   );

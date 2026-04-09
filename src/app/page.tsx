@@ -14,12 +14,23 @@ export default function Home() {
     <>
       <Navbar />
 
-      <main className="flex-1">
+      <main className="flex-1 overflow-x-hidden">
+        {/* Hero with parallax background */}
         <HeroSection />
+
+        {/* Lifecycle bento grid section */}
         <LifecycleStrip />
+
+        {/* Traction stats with glassmorphism */}
         <ProofStrip />
+
+        {/* Who We Serve with 3D cards */}
         <WhoWeServe />
+
+        {/* Social proof and testimonials */}
         <SocialProof />
+
+        {/* Final CTA section */}
         <HomeCTA />
       </main>
 

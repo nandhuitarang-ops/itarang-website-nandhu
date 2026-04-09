@@ -22,7 +22,7 @@ export default function FloatingDock() {
     <div className="hidden md:block">
       <Dock
         items={dockItems}
-        className="backdrop-blur-xl bg-white/80 border-gray-200/50 shadow-lg shadow-gray-900/5"
+        className="backdrop-blur-2xl bg-white/90 border-dark-900/5 shadow-xl shadow-dark-900/5"
       />
     </div>
   );

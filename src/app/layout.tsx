@@ -40,8 +40,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${dmSerif.variable} ${jakarta.variable} ${jetbrains.variable}`}>
-      <body className="min-h-screen flex flex-col antialiased">
+    <html lang="en" className={`${dmSerif.variable} ${jakarta.variable} ${jetbrains.variable}`} suppressHydrationWarning>
+      <body className="min-h-screen flex flex-col antialiased bg-surface-50 text-dark-900 selection:bg-brand-200/50 selection:text-brand-900">
         {children}
         <ChatWidget />
       </body>

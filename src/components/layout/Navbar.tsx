@@ -67,10 +67,10 @@ export default function Navbar() {
   }, [mobileOpen]);
 
   const linkClass = cn(
-    "text-sm font-medium transition-all px-4 py-2 rounded-lg font-sans",
+    "text-sm font-medium transition-all px-4 py-2.5 rounded-xl font-sans",
     scrolled
-      ? "text-gray-600 hover:text-brand-600 hover:bg-brand-50"
-      : "text-white/70 hover:text-white hover:bg-white/10"
+      ? "text-dark-600 hover:text-brand-600 hover:bg-brand-50/50"
+      : "text-white/60 hover:text-white hover:bg-white/10"
   );
 
   // Resolve active data for the desktop 3-column panel
@@ -84,7 +84,7 @@ export default function Navbar() {
         className={cn(
           "fixed top-0 left-0 right-0 z-50 transition-all duration-500",
           scrolled
-            ? "bg-white/80 backdrop-blur-xl border-b border-gray-200/50 shadow-[0_1px_20px_rgba(0,0,0,0.04)]"
+            ? "bg-white/85 backdrop-blur-2xl border-b border-dark-900/5 shadow-[0_4px_30px_rgba(0,0,0,0.03)]"
             : "bg-transparent"
         )}
       >

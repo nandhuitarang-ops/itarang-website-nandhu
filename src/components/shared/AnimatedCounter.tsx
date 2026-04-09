@@ -2,6 +2,7 @@
 
 import CountUp from "react-countup";
 import { useInView } from "react-intersection-observer";
+import { cn } from "@/lib/utils";
 
 interface AnimatedCounterProps {
   value: number;
@@ -9,6 +10,7 @@ interface AnimatedCounterProps {
   suffix?: string;
   label: string;
   duration?: number;
+  className?: string;
 }
 
 export default function AnimatedCounter({
@@ -17,6 +19,7 @@ export default function AnimatedCounter({
   suffix = "",
   label,
   duration = 2.5,
+  className,
 }: AnimatedCounterProps) {
   const { ref, inView } = useInView({
     triggerOnce: true,
@@ -25,7 +28,12 @@ export default function AnimatedCounter({
 
   return (
     <div ref={ref} className="text-center">
-      <div className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white">
+      <div
+        className={cn(
+          "text-4xl sm:text-5xl lg:text-6xl font-bold",
+          className ? `bg-gradient-to-r ${className} bg-clip-text text-transparent` : "text-white"
+        )}
+      >
         {inView ? (
           <CountUp
             start={0}
@@ -41,7 +49,7 @@ export default function AnimatedCounter({
           </span>
         )}
       </div>
-      <p className="mt-2 text-sm sm:text-base text-white/80">{label}</p>
+      <p className="mt-3 text-sm sm:text-base text-white/60 font-medium">{label}</p>
     </div>
   );
 }
