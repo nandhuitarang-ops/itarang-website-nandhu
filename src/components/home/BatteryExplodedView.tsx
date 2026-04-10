@@ -1,341 +1,271 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
-import { motion, useAnimation, Variants } from "framer-motion";
+import { motion, useScroll, useTransform, AnimatePresence } from "framer-motion";
+import { useRef, useState } from "react";
 import { useInView } from "react-intersection-observer";
+import Image from "next/image";
+import { 
+  Activity, 
+  Wrench, 
+  Truck, 
+  RefreshCw, 
+  BadgeDollarSign, 
+  Recycle,
+  ChevronRight
+} from "lucide-react";
 
-interface LayerProps {
-  name: string;
-  index: number;
-  isHovered: boolean;
-  onHover: (index: number | null) => void;
-  breatheOffset: number;
-  hasExploded: boolean;
-}
-
-const layerData = [
-  { name: "Lid Cover", baseOffset: 0 },
-  { name: "BMS Circuit Board", baseOffset: 1 },
-  { name: "Cell Array", baseOffset: 2 },
-  { name: "Aluminum Chassis", baseOffset: 3 },
-  { name: "Base Plate", baseOffset: 4 },
+const services = [
+  {
+    id: "monitor",
+    label: "Monitor",
+    description: "Real-time IoT tracking of battery health, charge cycles, and performance metrics",
+    icon: Activity,
+  },
+  {
+    id: "maintain",
+    label: "Maintain",
+    description: "Proactive maintenance alerts and certified service network across India",
+    icon: Wrench,
+  },
+  {
+    id: "deploy",
+    label: "Deploy",
+    description: "Seamless fleet integration with plug-and-play installation support",
+    icon: Truck,
+  },
+  {
+    id: "buyback",
+    label: "Buyback",
+    description: "Guaranteed buyback program ensuring maximum residual value",
+    icon: RefreshCw,
+  },
+  {
+    id: "finance",
+    label: "Finance",
+    description: "Flexible financing options with asset-backed certificates",
+    icon: BadgeDollarSign,
+  },
+  {
+    id: "recycle",
+    label: "Recycle",
+    description: "Sustainable end-of-life recycling with zero landfill commitment",
+    icon: Recycle,
+  },
 ];
 
-const Layer = ({ name, index, isHovered, onHover, breatheOffset, hasExploded }: LayerProps) => {
-  const baseY = index * 48;
-  const separationY = hasExploded ? index * 80 : index * 48;
-  const hoverLift = isHovered ? -8 : 0;
-  
-  return (
-    <motion.div
-      className="relative cursor-pointer"
-      style={{
-        zIndex: 5 - index,
-        transformStyle: "preserve-3d",
-      }}
-      initial={{ y: 0, opacity: 0 }}
-      animate={{
-        y: separationY + breatheOffset + hoverLift,
-        opacity: 1,
-      }}
-      transition={{
-        y: { 
-          type: "spring", 
-          stiffness: 100, 
-          damping: 20,
-          delay: hasExploded ? index * 0.08 : 0 
-        },
-        opacity: { duration: 0.5, delay: index * 0.08 },
-      }}
-      onMouseEnter={() => onHover(index)}
-      onMouseLeave={() => onHover(null)}
-    >
-      {/* Tooltip */}
-      {isHovered && (
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: 10 }}
-          className="absolute -top-8 left-1/2 -translate-x-1/2 px-3 py-1.5 bg-dark-900/90 text-white text-xs font-medium rounded-lg whitespace-nowrap z-50 backdrop-blur-sm"
-        >
-          {name}
-          <div className="absolute top-full left-1/2 -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-dark-900/90" />
-        </motion.div>
-      )}
-      
-      {/* Layer Content */}
-      {index === 0 && <LidLayer isHovered={isHovered} />}
-      {index === 1 && <BMSLayer isHovered={isHovered} />}
-      {index === 2 && <CellArrayLayer isHovered={isHovered} />}
-      {index === 3 && <ChassisLayer isHovered={isHovered} />}
-      {index === 4 && <BasePlateLayer isHovered={isHovered} />}
-    </motion.div>
-  );
-};
-
-// Layer 1: Electric Blue Lid
-const LidLayer = ({ isHovered }: { isHovered: boolean }) => (
-  <div
-    className={`relative w-64 h-12 rounded-lg transition-all duration-300 ${
-      isHovered ? "shadow-[0_0_20px_rgba(0,212,255,0.5)]" : ""
-    }`}
-    style={{
-      background: "linear-gradient(135deg, #0078FF 0%, #0056CC 100%)",
-      transform: "perspective(800px) rotateX(15deg) rotateY(-10deg)",
-      border: isHovered ? "1px solid #00D4FF" : "1px solid rgba(255,255,255,0.2)",
-    }}
-  >
-    {/* Handles */}
-    <div className="absolute -top-2 left-8 w-8 h-3 rounded-t-full bg-gradient-to-b from-amber-600 to-amber-800" />
-    <div className="absolute -top-2 right-8 w-8 h-3 rounded-t-full bg-gradient-to-b from-amber-600 to-amber-800" />
-    
-    {/* Branding */}
-    <div className="absolute inset-0 flex items-center justify-between px-4">
-      <div className="flex items-center gap-2">
-        <svg className="w-5 h-5 text-white" viewBox="0 0 24 24" fill="currentColor">
-          <path d="M13 2L4 14h7v8l9-12h-7V2z" />
-        </svg>
-        <span className="text-white font-bold text-sm tracking-wide">iTarang</span>
-      </div>
-      <div className="text-white/80 text-[10px] font-medium">
-        <div className="flex items-center gap-1">
-          <span>TRONTEK</span>
-        </div>
-      </div>
-    </div>
-    
-    {/* Surface texture */}
-    <div className="absolute inset-0 bg-gradient-to-b from-white/10 to-transparent rounded-lg" />
-  </div>
-);
-
-// Layer 2: BMS Circuit Board
-const BMSLayer = ({ isHovered }: { isHovered: boolean }) => (
-  <div
-    className={`relative w-60 h-10 rounded transition-all duration-300 ${
-      isHovered ? "shadow-[0_0_20px_rgba(0,212,255,0.5)]" : ""
-    }`}
-    style={{
-      background: "linear-gradient(135deg, #1a3d2e 0%, #0d261c 100%)",
-      transform: "perspective(800px) rotateX(15deg) rotateY(-10deg)",
-      border: isHovered ? "1px solid #00D4FF" : "1px solid rgba(0,255,100,0.2)",
-    }}
-  >
-    {/* Circuit traces */}
-    <div className="absolute inset-2 overflow-hidden">
-      {[...Array(6)].map((_, i) => (
-        <motion.div
-          key={i}
-          className="absolute h-[1px] bg-emerald-400/40"
-          style={{
-            top: `${15 + i * 12}%`,
-            left: `${5 + i * 3}%`,
-            width: `${30 + Math.random() * 40}%`,
-          }}
-          animate={{
-            opacity: [0.3, 0.8, 0.3],
-          }}
-          transition={{
-            duration: 2,
-            repeat: Infinity,
-            delay: i * 0.2,
-          }}
-        />
-      ))}
-      {/* IC Chips */}
-      <div className="absolute top-2 left-4 w-6 h-4 bg-dark-900 rounded-sm border border-emerald-500/30" />
-      <div className="absolute top-2 right-8 w-4 h-4 bg-dark-900 rounded-sm border border-emerald-500/30" />
-      <div className="absolute bottom-1 left-1/2 -translate-x-1/2 w-8 h-3 bg-dark-900 rounded-sm border border-emerald-500/30" />
-    </div>
-  </div>
-);
-
-// Layer 3: Cylindrical Cell Array
-const CellArrayLayer = ({ isHovered }: { isHovered: boolean }) => (
-  <div
-    className={`relative w-56 h-16 rounded transition-all duration-300 ${
-      isHovered ? "shadow-[0_0_20px_rgba(0,212,255,0.5)]" : ""
-    }`}
-    style={{
-      transform: "perspective(800px) rotateX(15deg) rotateY(-10deg)",
-      border: isHovered ? "1px solid #00D4FF" : "none",
-    }}
-  >
-    {/* Cell rows */}
-    <div className="flex flex-col gap-1 p-1">
-      {[0, 1, 2].map((row) => (
-        <div key={row} className="flex gap-1 justify-center">
-          {[...Array(8)].map((_, i) => (
-            <div
-              key={i}
-              className="w-5 h-4 rounded-full"
-              style={{
-                background: "linear-gradient(90deg, #a8a8a8 0%, #e8e8e8 50%, #a8a8a8 100%)",
-                boxShadow: "inset 0 1px 2px rgba(255,255,255,0.5), inset 0 -1px 2px rgba(0,0,0,0.2)",
-              }}
-            />
-          ))}
-        </div>
-      ))}
-    </div>
-  </div>
-);
-
-// Layer 4: Aluminum Chassis
-const ChassisLayer = ({ isHovered }: { isHovered: boolean }) => (
-  <div
-    className={`relative w-64 h-20 rounded transition-all duration-300 ${
-      isHovered ? "shadow-[0_0_20px_rgba(0,212,255,0.5)]" : ""
-    }`}
-    style={{
-      background: "linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 100%)",
-      transform: "perspective(800px) rotateX(15deg) rotateY(-10deg)",
-      border: isHovered ? "1px solid #00D4FF" : "1px solid rgba(255,255,255,0.1)",
-    }}
-  >
-    {/* Inner cavity */}
-    <div 
-      className="absolute inset-2 rounded bg-dark-900/50"
-      style={{
-        boxShadow: "inset 0 2px 8px rgba(0,0,0,0.5)",
-      }}
-    />
-    
-    {/* Cables */}
-    <div className="absolute top-1/2 -right-12 -translate-y-1/2 flex flex-col gap-2">
-      <motion.div 
-        className="w-16 h-2 rounded-full bg-dark-800"
-        animate={{ y: [0, 2, 0] }}
-        transition={{ duration: 3, repeat: Infinity }}
-      >
-        <div className="absolute right-0 w-4 h-3 bg-gradient-to-r from-sky-500 to-sky-600 rounded -translate-y-0.5" />
-      </motion.div>
-      <motion.div 
-        className="w-14 h-2 rounded-full bg-dark-800"
-        animate={{ y: [0, 3, 0] }}
-        transition={{ duration: 3.5, repeat: Infinity, delay: 0.2 }}
-      >
-        <div className="absolute right-0 w-4 h-3 bg-gradient-to-r from-gray-400 to-gray-500 rounded -translate-y-0.5" />
-      </motion.div>
-    </div>
-    
-    {/* Side vents */}
-    <div className="absolute left-1 top-1/2 -translate-y-1/2 flex flex-col gap-1">
-      {[...Array(3)].map((_, i) => (
-        <div key={i} className="w-1 h-3 bg-dark-700 rounded-full" />
-      ))}
-    </div>
-  </div>
-);
-
-// Layer 5: Base Plate
-const BasePlateLayer = ({ isHovered }: { isHovered: boolean }) => (
-  <div
-    className={`relative w-68 h-6 rounded-b-lg transition-all duration-300 ${
-      isHovered ? "shadow-[0_0_20px_rgba(0,212,255,0.5)]" : ""
-    }`}
-    style={{
-      background: "linear-gradient(135deg, #1a1a1a 0%, #0d0d0d 100%)",
-      transform: "perspective(800px) rotateX(15deg) rotateY(-10deg)",
-      border: isHovered ? "1px solid #00D4FF" : "1px solid rgba(255,255,255,0.05)",
-      width: "272px",
-    }}
-  >
-    {/* Mounting feet */}
-    <div className="absolute -bottom-2 left-2 w-4 h-3 bg-dark-800 rounded-b" />
-    <div className="absolute -bottom-2 right-2 w-4 h-3 bg-dark-800 rounded-b" />
-    <div className="absolute -bottom-2 left-1/4 w-4 h-3 bg-dark-800 rounded-b" />
-    <div className="absolute -bottom-2 right-1/4 w-4 h-3 bg-dark-800 rounded-b" />
-    
-    {/* Surface texture */}
-    <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent rounded-b-lg" />
-  </div>
-);
-
 export default function BatteryExplodedView() {
-  const [hoveredLayer, setHoveredLayer] = useState<number | null>(null);
-  const [breatheOffset, setBreatheOffset] = useState(0);
-  const [hasExploded, setHasExploded] = useState(false);
-  const [initialExplosionDone, setInitialExplosionDone] = useState(false);
-  const explosionTriggered = useRef(false);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [activeService, setActiveService] = useState<string | null>(null);
+  const [showEcosystem, setShowEcosystem] = useState(false);
   
-  const { ref, inView } = useInView({
-    threshold: 0.3,
+  const { ref: inViewRef, inView } = useInView({
+    threshold: 0.2,
     triggerOnce: true,
   });
 
-  // Breathing animation
-  useEffect(() => {
-    const breatheInterval = setInterval(() => {
-      setBreatheOffset((prev) => {
-        const time = Date.now() / 1000;
-        return Math.sin(time * (Math.PI / 2)) * 4;
-      });
-    }, 50);
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ["start end", "end start"],
+  });
 
-    return () => clearInterval(breatheInterval);
-  }, []);
-
-  // Dramatic explosion on scroll into view
-  useEffect(() => {
-    if (inView && !explosionTriggered.current) {
-      explosionTriggered.current = true;
-      
-      // Explode
-      setHasExploded(true);
-      
-      // Hold for 600ms then reassemble
-      setTimeout(() => {
-        setHasExploded(false);
-        setInitialExplosionDone(true);
-      }, 600);
-    }
-  }, [inView]);
+  const y = useTransform(scrollYProgress, [0, 1], [30, -30]);
+  const rotateY = useTransform(scrollYProgress, [0, 0.5, 1], [-5, 0, 5]);
 
   return (
-    <div 
-      ref={ref}
-      className="w-full flex items-center justify-center py-12"
-    >
-      <div 
-        className="relative"
-        style={{
-          transformStyle: "preserve-3d",
-          perspective: "1000px",
-        }}
-      >
-        {/* Ambient glow behind battery */}
-        <div 
-          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-80 h-80 rounded-full opacity-20 blur-3xl pointer-events-none"
-          style={{
-            background: "radial-gradient(circle, #0078FF 0%, transparent 70%)",
-          }}
-        />
-        
-        {/* Battery layers */}
-        <div className="relative flex flex-col items-center">
-          {layerData.map((layer, index) => (
-            <Layer
-              key={layer.name}
-              name={layer.name}
-              index={index}
-              isHovered={hoveredLayer === index}
-              onHover={setHoveredLayer}
-              breatheOffset={breatheOffset}
-              hasExploded={hasExploded}
-            />
-          ))}
+    <div ref={containerRef} className="relative">
+      <div ref={inViewRef} className="relative">
+        {/* Toggle buttons */}
+        <div className="flex justify-center gap-3 mb-10">
+          <button
+            onClick={() => setShowEcosystem(false)}
+            className={`px-6 py-3 rounded-2xl text-sm font-medium transition-all duration-300 ${
+              !showEcosystem 
+                ? "bg-brand-500 text-white shadow-lg shadow-brand-500/25" 
+                : "bg-surface-100 text-dark-600 hover:bg-surface-200"
+            }`}
+          >
+            Product View
+          </button>
+          <button
+            onClick={() => setShowEcosystem(true)}
+            className={`px-6 py-3 rounded-2xl text-sm font-medium transition-all duration-300 ${
+              showEcosystem 
+                ? "bg-brand-500 text-white shadow-lg shadow-brand-500/25" 
+                : "bg-surface-100 text-dark-600 hover:bg-surface-200"
+            }`}
+          >
+            Ecosystem View
+          </button>
         </div>
-        
-        {/* Shadow */}
-        <motion.div
-          className="absolute -bottom-8 left-1/2 -translate-x-1/2 w-48 h-4 rounded-full bg-black/30 blur-md"
-          animate={{
-            scale: hasExploded ? [1, 1.2, 1] : 1,
-            opacity: hasExploded ? [0.3, 0.15, 0.3] : 0.3,
-          }}
-          transition={{ duration: 0.6 }}
-        />
+
+        {/* Image container with animations */}
+        <div className="relative">
+          <AnimatePresence mode="wait">
+            {!showEcosystem ? (
+              /* Product View */
+              <motion.div
+                key="product"
+                initial={{ opacity: 0, scale: 0.9, y: 40 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.95, y: -20 }}
+                transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+                className="relative"
+              >
+                {/* Ambient glow effect */}
+                <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                  <div className="w-[500px] h-[500px] bg-brand-400/15 rounded-full blur-[100px]" />
+                </div>
+                
+                {/* Battery image with 3D hover effect */}
+                <motion.div
+                  style={{ y, rotateY }}
+                  className="relative max-w-2xl mx-auto"
+                >
+                  <motion.div
+                    className="relative cursor-pointer"
+                    whileHover={{ scale: 1.03, y: -8 }}
+                    transition={{ duration: 0.4, ease: "easeOut" }}
+                  >
+                    <Image
+                      src="/images/itarang-battery.png"
+                      alt="iTarang Advanced Lithium Battery"
+                      width={700}
+                      height={700}
+                      className="w-full h-auto drop-shadow-2xl"
+                      priority
+                    />
+                  </motion.div>
+                  
+                  {/* Floating spec cards */}
+                  <motion.div
+                    initial={{ opacity: 0, x: -30 }}
+                    animate={inView ? { opacity: 1, x: 0 } : {}}
+                    transition={{ delay: 0.4, duration: 0.5 }}
+                    className="absolute left-0 top-1/4 -translate-x-[110%] hidden lg:block"
+                  >
+                    <div className="bg-white/95 backdrop-blur-xl rounded-2xl p-5 shadow-xl shadow-dark-900/5 border border-dark-100/10">
+                      <div className="text-xs text-dark-400 mb-1 uppercase tracking-wider">Capacity</div>
+                      <div className="text-2xl font-bold text-dark-900">60V / 40Ah</div>
+                    </div>
+                  </motion.div>
+                  
+                  <motion.div
+                    initial={{ opacity: 0, x: 30 }}
+                    animate={inView ? { opacity: 1, x: 0 } : {}}
+                    transition={{ delay: 0.6, duration: 0.5 }}
+                    className="absolute right-0 top-1/3 translate-x-[110%] hidden lg:block"
+                  >
+                    <div className="bg-white/95 backdrop-blur-xl rounded-2xl p-5 shadow-xl shadow-dark-900/5 border border-dark-100/10">
+                      <div className="text-xs text-dark-400 mb-1 uppercase tracking-wider">Warranty</div>
+                      <div className="text-2xl font-bold text-dark-900">3 Years</div>
+                    </div>
+                  </motion.div>
+                  
+                  <motion.div
+                    initial={{ opacity: 0, y: 30 }}
+                    animate={inView ? { opacity: 1, y: 0 } : {}}
+                    transition={{ delay: 0.8, duration: 0.5 }}
+                    className="absolute -bottom-4 left-1/2 -translate-x-1/2"
+                  >
+                    <div className="bg-white/95 backdrop-blur-xl rounded-2xl px-8 py-4 shadow-xl shadow-dark-900/5 border border-dark-100/10">
+                      <div className="flex items-center gap-6">
+                        <div className="text-center">
+                          <div className="text-xs text-dark-400 uppercase tracking-wider">Range</div>
+                          <div className="text-lg font-bold text-dark-900">80+ km</div>
+                        </div>
+                        <div className="w-px h-10 bg-dark-200" />
+                        <div className="text-center">
+                          <div className="text-xs text-dark-400 uppercase tracking-wider">Weight</div>
+                          <div className="text-lg font-bold text-dark-900">24 kg</div>
+                        </div>
+                        <div className="w-px h-10 bg-dark-200" />
+                        <div className="text-center">
+                          <div className="text-xs text-dark-400 uppercase tracking-wider">Cycles</div>
+                          <div className="text-lg font-bold text-dark-900">2000+</div>
+                        </div>
+                      </div>
+                    </div>
+                  </motion.div>
+                </motion.div>
+                
+                {/* Call to action */}
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={inView ? { opacity: 1 } : {}}
+                  transition={{ delay: 1, duration: 0.5 }}
+                  className="flex justify-center mt-20"
+                >
+                  <button 
+                    onClick={() => setShowEcosystem(true)}
+                    className="flex items-center gap-2 text-brand-600 hover:text-brand-700 font-medium transition-colors group"
+                  >
+                    <span>Explore Full Ecosystem</span>
+                    <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                  </button>
+                </motion.div>
+              </motion.div>
+            ) : (
+              /* Ecosystem View */
+              <motion.div
+                key="ecosystem"
+                initial={{ opacity: 0, scale: 0.95, y: 40 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.95, y: -20 }}
+                transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+                className="relative"
+              >
+                {/* Ecosystem image */}
+                <motion.div 
+                  className="relative max-w-4xl mx-auto"
+                  style={{ y }}
+                >
+                  <Image
+                    src="/images/itarang-ecosystem.png"
+                    alt="iTarang Battery Ecosystem - Monitor, Maintain, Deploy, Buyback, Finance, Recycle"
+                    width={1000}
+                    height={800}
+                    className="w-full h-auto rounded-3xl"
+                    priority
+                  />
+                </motion.div>
+                
+                {/* Service cards grid */}
+                <motion.div
+                  initial={{ opacity: 0, y: 30 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.3, duration: 0.5 }}
+                  className="mt-12 grid grid-cols-2 md:grid-cols-3 gap-4"
+                >
+                  {services.map((service, index) => (
+                    <motion.div
+                      key={service.id}
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.4 + index * 0.08 }}
+                      onMouseEnter={() => setActiveService(service.id)}
+                      onMouseLeave={() => setActiveService(null)}
+                      className={`group p-5 rounded-2xl border transition-all duration-300 cursor-pointer ${
+                        activeService === service.id
+                          ? "bg-brand-50 border-brand-200 shadow-lg shadow-brand-500/10 -translate-y-1"
+                          : "bg-white/70 backdrop-blur-sm border-dark-100/50 hover:border-brand-200 hover:bg-white hover:-translate-y-1"
+                      }`}
+                    >
+                      <div className={`w-11 h-11 rounded-xl flex items-center justify-center mb-4 transition-all duration-300 ${
+                        activeService === service.id
+                          ? "bg-brand-500 text-white shadow-lg shadow-brand-500/30"
+                          : "bg-surface-100 text-dark-500 group-hover:bg-brand-100 group-hover:text-brand-600"
+                      }`}>
+                        <service.icon className="w-5 h-5" />
+                      </div>
+                      <h4 className="font-semibold text-dark-900 mb-2">{service.label}</h4>
+                      <p className="text-sm text-dark-500 leading-relaxed">{service.description}</p>
+                    </motion.div>
+                  ))}
+                </motion.div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
       </div>
     </div>
   );
